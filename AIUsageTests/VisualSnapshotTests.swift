@@ -455,6 +455,14 @@ final class VisualSnapshotTests: XCTestCase {
                     QuotaWindow(kind: .weekly, usedPercent: 48, resetsAt: nil)
                 ],
                 fetchedAt: now
+            ),
+            .fireworks: ProviderSnapshot(
+                provider: .fireworks,
+                planName: "$200/mo limit",
+                windows: [
+                    QuotaWindow(kind: .monthly, usedPercent: 25, resetsAt: nil)
+                ],
+                fetchedAt: now
             )
         ]
         let providers = ProviderID.allCases.compactMap { provider in

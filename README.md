@@ -28,7 +28,7 @@
 </p>
 
 AI Usage shows Claude Code, Codex, Cursor, Antigravity, GitHub Copilot, Devin,
-and Grok limits and stays out of the way. No extra account, API key, local
+Grok, and Fireworks limits and stays out of the way. No extra account, API key, local
 server, telemetry, usage history, or background log scanning.
 
 ## Choose exactly what appears.
@@ -71,6 +71,7 @@ the menu bar rather than the Dock. macOS 26 or newer is required.
 - GitHub Copilot credits, chat, and completions
 - Devin daily and weekly quota
 - Grok weekly quota
+- Fireworks monthly spend limit
 - Claude Code extra usage and Codex credits when available
 - Remaining or used percentages, switchable directly in the panel
 - Independent menu bar controls and metric choices for each provider

@@ -404,6 +404,60 @@ final class MapperTests: XCTestCase {
         XCTAssertEqual(snapshot.windows.map(\.usedPercent), [48])
     }
 
+    func testFireworksMapsMonthlySpendQuota() throws {
+        let now = try XCTUnwrap(ProviderParsing.date("2026-10-22T12:00:00Z"))
+        let snapshot = try FireworksUsageMapper.map(
+            response: httpResponse(json: """
+            {
+              "quotas": [
+                {"name":"accounts/acme/quotas/h100-us-iowa-1","value":"8","usage":2},
+                {"name":"accounts/acme/quotas/monthly-spend-usd","value":"200","maxValue":"500","usage":50}
+              ]
+            }
+            """),
+            now: now,
+            locale: Locale(identifier: "en_US")
+        )
+
+        XCTAssertEqual(snapshot.provider, .fireworks)
+        XCTAssertEqual(snapshot.planName, "$200/mo limit")
+        XCTAssertEqual(snapshot.windows.map(\.kind), [.monthly])
+        XCTAssertEqual(snapshot.windows.map(\.usedPercent), [25])
+        XCTAssertEqual(
+            snapshot.windows.first?.resetsAt,
+            ProviderParsing.date("2026-11-01T00:00:00Z")
+        )
+    }
+
+    func testFireworksClassifiesFailures() {
+        XCTAssertThrowsError(try FireworksUsageMapper.map(
+            response: httpResponse(401),
+            now: Date()
+        )) { error in
+            XCTAssertEqual((error as? ProviderFailure)?.kind, .authentication)
+        }
+        XCTAssertThrowsError(try FireworksUsageMapper.map(
+            response: httpResponse(json: #"{"quotas":[]}"#),
+            now: Date()
+        )) { error in
+            XCTAssertEqual((error as? ProviderFailure)?.kind, .invalidResponse)
+        }
+    }
+
+    func testFireworksDiscoversOnlySoleAccount() throws {
+        XCTAssertEqual(
+            try FireworksUsageMapper.soleAccountID(
+                response: httpResponse(json: #"{"accounts":[{"name":"accounts/acme"}]}"#),
+                now: Date()
+            ),
+            "acme"
+        )
+        XCTAssertNil(try FireworksUsageMapper.soleAccountID(
+            response: httpResponse(json: #"{"accounts":[{"name":"accounts/a"},{"name":"accounts/b"}]}"#),
+            now: Date()
+        ))
+    }
+
     func testAntigravityMapsAllAuthoritativeQuotaPools() throws {
         let snapshot = try XCTUnwrap(AntigravityUsageMapper.summary(
             Data("""

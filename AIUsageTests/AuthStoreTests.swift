@@ -148,6 +148,25 @@ final class AuthStoreTests: XCTestCase {
         )
     }
 
+    func testFireworksReadsFirectlAuthFile() {
+        let store = FireworksAuthStore(files: MemoryFiles([
+            FireworksAuthStore.authPath: """
+            # written by firectl
+            [default]
+            api_key = "fw_test"
+            account_id = accounts/acme
+            """
+        ]))
+
+        XCTAssertEqual(
+            store.load(),
+            FireworksAuth(apiKey: "fw_test", accountID: "acme")
+        )
+        XCTAssertNil(FireworksAuthStore(files: MemoryFiles([
+            FireworksAuthStore.authPath: "account_id = acme"
+        ])).load())
+    }
+
     func testAntigravityDecodesGoKeyringTokenEnvelope() throws {
         let json = """
         {

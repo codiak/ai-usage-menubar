@@ -8,6 +8,7 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
     case copilot
     case devin
     case grok
+    case fireworks
 
     var id: Self { self }
 
@@ -20,6 +21,7 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .copilot: "GitHub Copilot"
         case .devin: "Devin"
         case .grok: "Grok"
+        case .fireworks: "Fireworks"
         }
     }
 
@@ -32,6 +34,7 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .copilot: "ProviderCopilot"
         case .devin: "ProviderDevin"
         case .grok: "ProviderGrok"
+        case .fireworks: "ProviderFireworks"
         }
     }
 
@@ -55,6 +58,7 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .copilot: ["copilot", "github-copilot"]
         case .devin: ["devin"]
         case .grok: ["grok"]
+        case .fireworks: ["firectl"]
         }
     }
 
@@ -90,6 +94,8 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
             ]
         case .grok:
             ["~/.grok"]
+        case .fireworks:
+            ["~/.fireworks"]
         }
     }
 
@@ -97,6 +103,7 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
         switch self {
         case .cursor: .totalUsage
         case .copilot: .credits
+        case .fireworks: .monthly
         case .claude, .codex, .antigravity, .devin, .grok: .weekly
         }
     }
@@ -106,6 +113,7 @@ enum QuotaKind: String, Codable, Hashable, Sendable {
     case session
     case weekly
     case daily
+    case monthly
     case sonnet
     case fable
     case sparkSession
@@ -124,6 +132,7 @@ enum QuotaKind: String, Codable, Hashable, Sendable {
         case .session: "Session"
         case .weekly: "Weekly"
         case .daily: "Daily"
+        case .monthly: "Monthly"
         case .sonnet: "Sonnet"
         case .fable: "Fable"
         case .sparkSession: "Spark"
@@ -144,6 +153,7 @@ enum QuotaKind: String, Codable, Hashable, Sendable {
         case .session: .session
         case .weekly: .weekly
         case .daily: .daily
+        case .monthly: .monthly
         case .sonnet: .sonnet
         case .fable: .fable
         case .sparkSession: .spark
@@ -164,6 +174,7 @@ enum MenuBarMetricID: String, CaseIterable, Codable, Identifiable, Sendable {
     case session
     case weekly
     case daily
+    case monthly
     case sonnet
     case fable
     case spark
@@ -185,6 +196,7 @@ enum MenuBarMetricID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .session: "Session"
         case .weekly: "Weekly"
         case .daily: "Daily"
+        case .monthly: "Monthly"
         case .sonnet: "Sonnet"
         case .fable: "Fable"
         case .spark: "Spark"
@@ -206,6 +218,7 @@ enum MenuBarMetricID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .session: "clock"
         case .weekly: "calendar"
         case .daily: "sun.max"
+        case .monthly: "calendar.circle"
         case .sonnet: "waveform"
         case .fable: "book.closed"
         case .spark: "sparkles"
@@ -227,6 +240,7 @@ enum MenuBarMetricID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .session: "S"
         case .weekly: "W"
         case .daily: "D"
+        case .monthly: "M"
         case .sonnet: "So"
         case .fable: "F"
         case .spark: "Sp"
@@ -248,6 +262,7 @@ enum MenuBarMetricID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .session: .session
         case .weekly: .weekly
         case .daily: .daily
+        case .monthly: .monthly
         case .sonnet: .sonnet
         case .fable: .fable
         case .spark: .sparkSession
