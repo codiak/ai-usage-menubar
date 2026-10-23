@@ -7,14 +7,25 @@ struct FireworksAuth: Equatable, Sendable {
 
 struct FireworksAuthStore: Sendable {
     static let authPath = "~/.fireworks/auth.ini"
+    /// Keychain service the Fireworks Nexus CLI (`nexus login`) writes to.
+    static let nexusKeychainService = "FireworksAI"
 
     let files: TextFileAccessing
+    let keychain: KeychainAccessing
 
-    init(files: TextFileAccessing = LocalTextFileAccessor()) {
+    init(
+        files: TextFileAccessing = LocalTextFileAccessor(),
+        keychain: KeychainAccessing = SecurityKeychainAccessor()
+    ) {
         self.files = files
+        self.keychain = keychain
     }
 
     func load() -> FireworksAuth? {
+        loadFirectlAuth() ?? loadNexusAuth()
+    }
+
+    private func loadFirectlAuth() -> FireworksAuth? {
         guard files.exists(Self.authPath),
               let text = try? files.readText(Self.authPath) else {
             return nil
@@ -25,6 +36,17 @@ struct FireworksAuthStore: Sendable {
             apiKey: apiKey,
             accountID: values["account_id"].map(Self.normalizedAccountID)
         )
+    }
+
+    /// Nexus stores only the key; the account is discovered from the API.
+    private func loadNexusAuth() -> FireworksAuth? {
+        guard let apiKey = try? keychain.readGenericPassword(
+            service: Self.nexusKeychainService
+        )?.trimmingCharacters(in: .whitespacesAndNewlines),
+            !apiKey.isEmpty else {
+            return nil
+        }
+        return FireworksAuth(apiKey: apiKey, accountID: nil)
     }
 
     /// Reads `key = value` lines written by `firectl`, with or without

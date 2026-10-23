@@ -125,15 +125,15 @@ causes at most one refresh and one retry.
 | GitHub Copilot | Copilot editor config, GitHub CLI config, then `gh:github.com` Keychain item | `api.github.com/copilot_internal/user` | Credits, Chat, Completions |
 | Devin | `~/.local/share/devin/credentials.toml`, then Devin state SQLite database | Codeium SeatManagement Connect RPC | Daily, Weekly |
 | Grok | `~/.grok/auth.json` | Grok CLI billing and settings APIs | Weekly |
-| Fireworks | `api_key` and `account_id` in `~/.fireworks/auth.ini`, written by `firectl` | `api.fireworks.ai/v1/accounts/{id}/quotas` | Monthly |
+| Fireworks | `api_key` and `account_id` in `~/.fireworks/auth.ini` (`firectl`), then Keychain service `FireworksAI` (`nexus login`) | `api.fireworks.ai/v1/accounts/{id}/quotas` | Monthly |
 
 Cursor, Antigravity, and Grok refresh expiring access tokens using the refresh
 credential already stored by the corresponding tool. Refreshed tokens are
 persisted only where necessary; Antigravity's derived access token is cached
 privately by AI Usage and bound to a hash of the current refresh credential.
 
-Fireworks reuses the API key `firectl set-api-key` already stored; AI Usage
-never asks for one. The Monthly row is the `monthly-spend-usd` quota's `usage`
+Fireworks reuses the API key that `firectl set-api-key` or the Nexus CLI's
+`nexus login` already stored; AI Usage never asks for one. The Monthly row is the `monthly-spend-usd` quota's `usage`
 divided by its enforced `value`, resetting at the start of the next UTC month.
 When `account_id` is absent, the account is discovered from `GET /v1/accounts`
 only if the key can see exactly one. Enterprise accounts without a monthly

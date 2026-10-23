@@ -22,7 +22,7 @@ actor FireworksProvider: UsageProvider {
         guard let auth = authStore.load() else {
             throw ProviderFailure(
                 .authentication,
-                "Not logged in. Run `firectl set-api-key`."
+                "Not logged in. Run `nexus login` or `firectl set-api-key`."
             )
         }
 

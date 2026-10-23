@@ -149,22 +149,43 @@ final class AuthStoreTests: XCTestCase {
     }
 
     func testFireworksReadsFirectlAuthFile() {
-        let store = FireworksAuthStore(files: MemoryFiles([
-            FireworksAuthStore.authPath: """
-            # written by firectl
-            [default]
-            api_key = "fw_test"
-            account_id = accounts/acme
-            """
-        ]))
+        let keychain = MemoryKeychain()
+        let store = FireworksAuthStore(
+            files: MemoryFiles([
+                FireworksAuthStore.authPath: """
+                # written by firectl
+                [default]
+                api_key = "fw_test"
+                account_id = accounts/acme
+                """
+            ]),
+            keychain: keychain
+        )
 
         XCTAssertEqual(
             store.load(),
             FireworksAuth(apiKey: "fw_test", accountID: "acme")
         )
-        XCTAssertNil(FireworksAuthStore(files: MemoryFiles([
-            FireworksAuthStore.authPath: "account_id = acme"
-        ])).load())
+        XCTAssertTrue(keychain.genericReads.isEmpty)
+        XCTAssertNil(FireworksAuthStore(
+            files: MemoryFiles([
+                FireworksAuthStore.authPath: "account_id = acme"
+            ]),
+            keychain: MemoryKeychain()
+        ).load())
+    }
+
+    func testFireworksFallsBackToNexusKeychainKey() {
+        let keychain = MemoryKeychain(generic: [
+            FireworksAuthStore.nexusKeychainService: "fw_nexus\n"
+        ])
+        let store = FireworksAuthStore(files: MemoryFiles(), keychain: keychain)
+
+        XCTAssertEqual(
+            store.load(),
+            FireworksAuth(apiKey: "fw_nexus", accountID: nil)
+        )
+        XCTAssertEqual(keychain.genericReads, ["FireworksAI"])
     }
 
     func testAntigravityDecodesGoKeyringTokenEnvelope() throws {

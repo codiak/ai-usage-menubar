@@ -58,7 +58,7 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .copilot: ["copilot", "github-copilot"]
         case .devin: ["devin"]
         case .grok: ["grok"]
-        case .fireworks: ["firectl"]
+        case .fireworks: ["nexus", "firectl"]
         }
     }
 
@@ -95,7 +95,7 @@ enum ProviderID: String, CaseIterable, Codable, Identifiable, Sendable {
         case .grok:
             ["~/.grok"]
         case .fireworks:
-            ["~/.fireworks"]
+            ["~/.nexus", "~/.fireworks"]
         }
     }
 

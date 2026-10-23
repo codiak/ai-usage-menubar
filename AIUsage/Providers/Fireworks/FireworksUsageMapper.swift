@@ -78,7 +78,7 @@ enum FireworksUsageMapper {
         case 401, 403:
             throw ProviderFailure(
                 .authentication,
-                "Fireworks API key was rejected. Run `firectl set-api-key`."
+                "Fireworks API key was rejected. Run `nexus login` again."
             )
         case 429:
             throw ProviderFailure(
